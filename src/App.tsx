@@ -1,13 +1,13 @@
-import "./components/LoginPage"
+import "./components/LoginPage";
 import "./App.css";
-import LoginPage  from "./components/LoginPage";
+import LoginPage from "./components/LoginPage";
+import { StrictMode } from "react";
 
 function App() {
-
   return (
-    <LoginPage>
-
-    </LoginPage>
+    <StrictMode>
+      <LoginPage></LoginPage>
+    </StrictMode>
   );
 }
 
