@@ -1,0 +1,70 @@
+.authen_panels {
+  padding: 20px;
+  box-sizing: border-box;
+  margin: 100px auto;
+  width: 80vw;
+  height: 40vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: start;
+}
+
+.authen_header {
+  font-size: 2.5vh;
+  margin: 0;
+  padding: 0;
+  align-self: stretch;
+}
+
+#login-with {
+  margin-top: 5vh;
+}
+
+#login-with button {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, '.SFNSText-Regular', sans-serif;
+  white-space: nowrap;
+  display: inline-block;
+  background: rgb(247, 249, 246);
+  border-radius: 10px;
+  border: none;
+  outline: none;
+  padding: 0;
+  cursor: pointer;
+  margin: 10px 0;
+  position: relative;
+  overflow: hidden; /* Ensure video doesn't overflow button */
+  width: 200px; /* Adjust as necessary */
+  height: 50px; /* Adjust as necessary */
+}
+
+.video-button {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+  height: 100%;
+  background-color: #fff;
+  color: #000;
+  font-size: 16px;
+  text-align: center;
+  line-height: 50px;
+  border: none;
+  cursor: pointer;
+}
+
+.hover-video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 0.3s;
+  z-index: -1; /* Initially hide behind button */
+}
+
+.video-button:hover .hover-video {
+  opacity: 1;
+  z-index: 1; /* Show above button background */
+}
