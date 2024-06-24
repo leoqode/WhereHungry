@@ -3,29 +3,63 @@
   box-sizing: border-box;
   margin: 100px auto;
   width: 80vw;
-  height: 40vh;
+  max-width: 1200px; 
+  height: auto; 
+  min-height: 40vh;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: start;
+  justify-content: flex-start;
 }
 
 .authen_header {
   font-size: 2.5vh;
-  margin: 0;
   padding: 0;
-  align-self: stretch;
+  text-align: center;
+  width: 100%;
+  max-width: 100%; 
+}
+
+.divider_wrapper:before, .divider_wrapper:after {
+  content: "";
+  border-bottom: 1px solid #42ff6b;
+  flex: 1 0 auto;
+  height: 1em;
+  margin: 0;
+}
+
+.divider {
+  text-align: center;
+  flex: .2 0 auto;
+  margin: 0;
+  height: 12px;
+}
+
+.divider_wrapper {
+  display: flex;
+  flex-direction: row;
+  text-transform: uppercase;
+  border: none;
+  font-size: 12px;
+  font-weight: 400;
+  margin: 0;
+  padding: 24px 0 0;
+  align-items: center;
+  justify-content: center;
+  width: 320px;
+  vertical-align: baseline;
 }
 
 #login-with {
   margin-top: 5vh;
   display: flex;
   flex-direction: column;
-  align-items: center; 
+  align-items: center;
 }
 
 #login-with button {
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, '.SFNSText-Regular', sans-serif;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, ".SFNSText-Regular",
+    sans-serif;
   background: white;
   border-radius: 10px;
   border: none;
@@ -33,9 +67,9 @@
   padding: 0;
   cursor: pointer;
   margin: 10px 0;
-  overflow: hidden; 
-  width: 30vw;
-  height: 50px;
+  overflow: hidden;
+  min-width: 300px;
+  min-height: 50px;
   position: relative;
 }
 
@@ -55,7 +89,7 @@
 
 .video-button span {
   position: relative;
-  z-index: 3; 
+  z-index: 3;
 }
 
 .hover-video {
@@ -69,7 +103,7 @@
   transform: translateX(-10vw);
   opacity: 0;
   transition: opacity 0.3s;
-  z-index: 1; 
+  z-index: 1;
 }
 
 .video-button.hovered .hover-video {
@@ -77,10 +111,8 @@
 }
 
 .video-button.hovered span {
-  z-index: 3; 
+  z-index: 3;
 }
-
-
 
 @media (max-width: 768px) {
   .hover-video {
