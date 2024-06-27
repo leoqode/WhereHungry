@@ -1,8 +1,9 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import "./LoginPage.css";
-import GoogleLogo from "../assets/google-logo-9808 1.svg"
-import VenmoLogo from "../assets/Venmo.svg"
+import GoogleLogo from "../assets/google-logo-9808 1.svg";
+import VenmoLogo from "../assets/Venmo.svg";
 import LoginwEmail from "./LoginwEmail";
+import SignupPage from "./SignupPage";
 import googleVideo from "../assets/ModifyWhereHungry.mp4";
 import venmoVideo from "../assets/ModifyWhereHungry.mp4";
 import { useNavigate } from "react-router-dom";
@@ -25,6 +26,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ navigation }) => {
   const googleVideoRef = useRef<HTMLVideoElement>(null);
   const venmoVideoRef = useRef<HTMLVideoElement>(null);
   const emailVideoRef = useRef<HTMLVideoElement>(null);
+  const [isLoginView, setIsLoginView] = useState(true);
 
   useEffect(() => {
     console.log("Google Video Ref:", googleVideoRef.current);
@@ -59,13 +61,20 @@ const LoginPage: React.FC<LoginPageProps> = ({ navigation }) => {
     }
   };
 
+  const toggleView = () => {
+    setIsLoginView(!isLoginView);
+  };
+
   return (
     <div className='authen_panels'>
-      <LoginwEmail></LoginwEmail>
+      {isLoginView ? (
+        <LoginwEmail navigation={navigation} />
+      ) : (
+        <SignupPage></SignupPage>
+      )}
       <div className='divider_wrapper'>
         <span className='divider'>Or</span>
       </div>
-      <header></header>
       <section id='login-with'>
         <button
           id='google-button'
@@ -79,12 +88,12 @@ const LoginPage: React.FC<LoginPageProps> = ({ navigation }) => {
             Your browser does not support the video tag.
           </video>
           <img
-          alt="Google"
-          src={GoogleLogo}
-          width={23}
-          height={23}
-          className="login_w_logos"
-          id="google-logo"
+            alt='Google'
+            src={GoogleLogo}
+            width={23}
+            height={23}
+            className='login_w_logos'
+            id='google-logo'
           />
         </button>
         <button
@@ -99,17 +108,39 @@ const LoginPage: React.FC<LoginPageProps> = ({ navigation }) => {
             Your browser does not support the video tag.
           </video>
           <img
-          src={VenmoLogo}
-          height={33}
-          width={43}
-          alt="Venmo"
-          id="venmo-logo"
+            src={VenmoLogo}
+            height={33}
+            width={43}
+            alt='Venmo'
+            id='venmo-logo'
           />
         </button>
       </section>
-      <footer></footer>
+      {isLoginView ? (
+        <p>
+          Don't have an account?{" "}
+          <button className='signup_toggle_view' onClick={toggleView}>
+            Sign up
+          </button>
+        </p>
+      ) : (
+        <p>
+          Already have an account?{" "}
+          <button className='signup_toggle_view' onClick={toggleView}>
+            Log in
+          </button>
+        </p>
+      )}
     </div>
   );
 };
 
 export default LoginPage;
+/*          
+        </>
+      ) : (
+        <>
+          <SignupPage navigation={navigation} />
+          <p>Already have an account? <button className="signup_toggle_view" onClick={toggleView}>Log in</button></p>
+        </>
+      )} */

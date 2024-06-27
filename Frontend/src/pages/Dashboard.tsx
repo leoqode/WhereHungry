@@ -1,9 +1,7 @@
-import React from 'react'
+import QuickAccess from "./QuickAccess";
 
 const Dashboard = () => {
-  return (
-    <div>Dashboard</div>
-  )
-}
+  return <QuickAccess></QuickAccess>;
+};
 
-export default Dashboard
+export default Dashboard;

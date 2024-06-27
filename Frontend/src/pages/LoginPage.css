@@ -1,11 +1,11 @@
 .authen_panels {
   padding: 20px;
   box-sizing: border-box;
-  margin: 100px auto;
-  width: 80vw;
-  max-width: 1200px; 
-  height: auto; 
-  min-height: 40vh;
+  margin: 0px auto;
+  min-width: 430px;
+  max-width: 1200px;
+  height: auto;
+  min-height: 400px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -13,14 +13,15 @@
 }
 
 .authen_header {
-  font-size: 2.5vh;
+  font-size: 20px;
   padding: 0;
   text-align: center;
   width: 100%;
-  max-width: 100%; 
+  max-width: 100%;
 }
 
-.divider_wrapper:before, .divider_wrapper:after {
+.divider_wrapper:before,
+.divider_wrapper:after {
   content: "";
   border-bottom: 1px solid #42ff6b;
   flex: 1 0 auto;
@@ -30,7 +31,7 @@
 
 .divider {
   text-align: center;
-  flex: .2 0 auto;
+  flex: 0.2 0 auto;
   margin: 0;
   height: 12px;
 }
@@ -72,16 +73,15 @@
   position: relative;
 }
 
-#venmo-logo{
+#venmo-logo {
   position: absolute;
-  right:15%;
+  right: 15%;
   bottom: 17%;
 }
-#google-logo{
-  position:absolute;
+#google-logo {
+  position: absolute;
   right: 21%;
   bottom: 25%;
-  
 }
 
 .video-button {
@@ -89,7 +89,7 @@
   width: 100%;
   height: 100%;
   background-color: #fff;
-  color: #000;
+  color: #000000;
   font-size: 16px;
   text-align: center;
   line-height: 50px;
@@ -111,12 +111,11 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transform: scale(.80);
+  transform: scale(0.8);
   transform: translateX(-100px);
   opacity: 0;
   transition: opacity 0.3s;
   z-index: 1;
-  
 }
 
 .video-button.hovered .hover-video {
@@ -127,8 +126,25 @@
   z-index: 3;
 }
 
+.signup_toggle_view {
+  text-decoration: underline;
+  color: #3a4653;
+  background: none;
+  border-radius: 10px;
+  border: none;
+  outline: none;
+  padding: 0;
+  cursor: pointer;
+  margin: 10px 0;
+  min-width: 60px;
+  min-height: 25px;
+  position: relative;
+}
+
+
 @media (max-width: 768px) {
   .hover-video {
     display: none;
   }
 }
+
