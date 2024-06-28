@@ -6,7 +6,6 @@ import { useNavigate } from "react-router-dom";
 import { AxiosError } from "axios";
 import axios from "axios";
 
-
 interface loginResponse {
   success: boolean;
   token?: string;
@@ -19,16 +18,16 @@ interface NavigationProps {
 
 interface LoginwEmailProps {
   navigation?: NavigationProps;
+  onLoginSuccess?: () => void;
 }
 
-const LoginwEmail: React.FC<LoginwEmailProps> = ({ navigation }) => {
+const LoginwEmail: React.FC<LoginwEmailProps> = ({ navigation, onLoginSuccess }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isEmailEmpty, setIsEmailEmpty] = useState(true);
   const [isPasswordEmpty, setIsPasswordEmpty] = useState(true);
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [promptSignUp, setPromptSignUp] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
 
@@ -39,7 +38,10 @@ const LoginwEmail: React.FC<LoginwEmailProps> = ({ navigation }) => {
     try {
       const response = await login(email, password);
       if (response.success) {
-        navigate("/dashboard");
+        navigate('/dashboard');
+        if (onLoginSuccess) {
+          onLoginSuccess();
+        }
       } else {
         setError(
           response.message || "Invalid email or password please try again"
@@ -55,7 +57,6 @@ const LoginwEmail: React.FC<LoginwEmailProps> = ({ navigation }) => {
               break;
             case 404:
               setError("User does not exist. Please create an account");
-              setPromptSignUp(true);
               break;
             default:
               setError("An error occured. Please try again later.");
@@ -64,9 +65,9 @@ const LoginwEmail: React.FC<LoginwEmailProps> = ({ navigation }) => {
           setError("Probably a network error. Please check your connection");
         }
       } else {
-        setError('An unexpected error occured. Please try again.');
+        setError("An unexpected error occured. Please try again.");
       }
-      console.error('Error while logging in', error);
+      console.error("Error while logging in", error);
     } finally {
       setIsLoading(false);
     }

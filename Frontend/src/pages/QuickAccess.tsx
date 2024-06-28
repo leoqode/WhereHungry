@@ -4,7 +4,7 @@ import ProfilePicture from "../assets/examplePFP.svg";
 
 
 const QuickAccess = () => {
-  const [userName, setUserName] = useState('Abby') /* Test username make sure to change cuh */
+  const [userName, setUserName] = useState() /* Test username make sure to change cuh */
 
 
   return (

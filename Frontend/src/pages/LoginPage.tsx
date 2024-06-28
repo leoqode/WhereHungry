@@ -3,7 +3,7 @@ import "./LoginPage.css";
 import GoogleLogo from "../assets/google-logo-9808 1.svg";
 import VenmoLogo from "../assets/Venmo.svg";
 import LoginwEmail from "./LoginwEmail";
-import SignupPage from "./SignupPage";
+import SignupPage from './SignupPage'
 import googleVideo from "../assets/ModifyWhereHungry.mp4";
 import venmoVideo from "../assets/ModifyWhereHungry.mp4";
 import { useNavigate } from "react-router-dom";
@@ -22,17 +22,26 @@ interface LoginPageProps {
 }
 
 const LoginPage: React.FC<LoginPageProps> = ({ navigation }) => {
-  const navigate = useNavigate();
   const googleVideoRef = useRef<HTMLVideoElement>(null);
   const venmoVideoRef = useRef<HTMLVideoElement>(null);
   const emailVideoRef = useRef<HTMLVideoElement>(null);
   const [isLoginView, setIsLoginView] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     console.log("Google Video Ref:", googleVideoRef.current);
     console.log("Venmo Video Ref:", venmoVideoRef.current);
     console.log("Email Video Ref:", emailVideoRef.current);
   }, []);
+
+
+  const handleSignupSuccess = () => {
+    setIsLoginView(true); 
+  };
+
+  const handleLoginSuccess = () => {
+    navigate("/dashboard");  // Navigate to dashboard on successful login
+  };
 
   const handleMouseOver = (
     videoRef: React.RefObject<HTMLVideoElement>,
@@ -68,9 +77,9 @@ const LoginPage: React.FC<LoginPageProps> = ({ navigation }) => {
   return (
     <div className='authen_panels'>
       {isLoginView ? (
-        <LoginwEmail navigation={navigation} />
+        <LoginwEmail navigation={navigation} onLoginSuccess={handleLoginSuccess} />
       ) : (
-        <SignupPage></SignupPage>
+        <SignupPage navigation={navigation} onSignupSuccess={handleSignupSuccess} />
       )}
       <div className='divider_wrapper'>
         <span className='divider'>Or</span>

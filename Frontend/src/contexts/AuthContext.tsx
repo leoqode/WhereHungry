@@ -5,15 +5,27 @@ interface User {
   email: string;
 }
 
-interface LoginResponse {
+interface SignupResponse {
   success: boolean;
   message?: string;
   token?: string;
+  loginResponse?: LoginResponse;
+}
+
+interface LoginResponse {
+  success: boolean;
+  token: string;
+  message?: string;
 }
 
 interface AuthContextType {
   user: User | null;
   login: (email: string, password: string) => Promise<LoginResponse>;
+  signup: (
+    email: string,
+    username: string,
+    password: string
+  ) => Promise<SignupResponse>;
   logout: () => void;
 }
 
@@ -23,6 +35,35 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
   const [user, setUser] = useState<User | null>(null);
+
+  const signup = async (
+    email: string,
+    username: string,
+    password: string
+  ): Promise<SignupResponse & {loginResponse ?: LoginResponse}> => {
+    try {
+      const signupResponse = await axios.post<SignupResponse>(
+        "http://localhost:3001/api/register",
+        { email, username, password }
+      );
+      if (signupResponse.data.success) {
+        try {
+          const loginResponse = await login(email, password);
+          return { ...signupResponse.data, loginResponse};
+        } catch (loginError) {
+          console.error("Auto-login after signup failed:", loginError);
+          return { ...signupResponse.data, message: "Signup successful, but auto-login failed. Please log in manually." };
+        }
+      }
+      return signupResponse.data;
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        throw error;
+      } else {
+        throw new Error("An unexpected error occurred");
+      }
+    }
+  };
 
   const login = async (
     email: string,
@@ -52,7 +93,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout }}>
+    <AuthContext.Provider value={{ user, login, signup, logout }}>
       {children}
     </AuthContext.Provider>
   );

@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import PizzaBack from "../assets/PizzaBack.svg";
-import './LoginPage.css';
-import './Loginwemail.css'
-import './SignupPage.css'
+import "./LoginPage.css";
+import "./Loginwemail.css";
+import "./SignupPage.css";
 import { useAuth } from "../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { AxiosError } from "axios";
@@ -20,9 +20,10 @@ interface NavigationProps {
 
 interface SignupwEmailProps {
   navigation?: NavigationProps;
+  onSignupSuccess?: () => void;  
 }
 
-const SignupwEmail: React.FC<SignupwEmailProps> = ({ navigation }) => {
+const SignupwEmail: React.FC<SignupwEmailProps> = ({ navigation , onSignupSuccess}) => {
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [isEmailEmpty, setIsEmailEmpty] = useState(true);
@@ -30,6 +31,7 @@ const SignupwEmail: React.FC<SignupwEmailProps> = ({ navigation }) => {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isPasswordMatch, setIsPasswordMatch] = useState(false);
+  const [signupSuccess, setSignupSucess] = useState(false);
   const { signup } = useAuth();
   const navigate = useNavigate();
 
@@ -47,35 +49,41 @@ const SignupwEmail: React.FC<SignupwEmailProps> = ({ navigation }) => {
       setError("Passwords do not match");
       setIsLoading(false);
       return;
-    }
-
-    try {
-      const response = await signup(email, username, formData.password);
-      if (response.success) {
-        navigate("/dashboard");
-      } else {
-        setError(response.message || "Failed to create an account. Please try again.");
-      }
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        const axiosError = error as AxiosError<signupResponse>;
-        if (axiosError.response) {
-          switch (axiosError.response.status) {
-            case 409:
-              setError("Email or username already exists");
-              break;
-            default:
-              setError("An error occurred. Please try again later.");
+    } else {
+      try {
+        const response = await signup(email, username, formData.password);
+        if (response.success) {
+          setSignupSucess(true);
+          if (onSignupSuccess){
+            onSignupSuccess();
           }
         } else {
-          setError("Probably a network error. Please check your connection");
+          setError(
+            response.message || "Failed to create an account. Please try again."
+          );
         }
-      } else {
-        setError('An unexpected error occurred. Please try again.');
+      } catch (error) {
+        if (axios.isAxiosError(error)) {
+          const axiosError = error as AxiosError<signupResponse>;
+          if (axiosError.response) {
+            switch (axiosError.response.status) {
+              case 400:
+                setError("Email or username already exists");
+                break;
+              default:
+                console.log(axios.AxiosError);
+                setError("An error occurred. Please try again later.");
+            }
+          } else {
+            setError("Probably a network error. Please check your connection");
+          }
+        } else {
+          setError("An unexpected error occurred. Please try again.");
+        }
+        console.error("Error while signing up", error);
+      } finally {
+        setIsLoading(false);
       }
-      console.error('Error while signing up', error);
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -160,7 +168,9 @@ const SignupwEmail: React.FC<SignupwEmailProps> = ({ navigation }) => {
           <div className='form-group'>
             <label htmlFor='password' className='manual_login_input_headers'>
               Password
-              {formData.password.trim() === "" && <span className='required_signup'>*</span>}
+              {formData.password.trim() === "" && (
+                <span className='required_signup'>*</span>
+              )}
             </label>
             <input
               id='password'
@@ -173,9 +183,14 @@ const SignupwEmail: React.FC<SignupwEmailProps> = ({ navigation }) => {
             />
           </div>
           <div className='form-group'>
-            <label htmlFor='confirmPassword' className='manual_login_input_headers'>
+            <label
+              htmlFor='confirmPassword'
+              className='manual_login_input_headers'
+            >
               Confirm Password
-              {formData.confirmPassword.trim() === "" && <span className='required_signup'>*</span>}
+              {formData.confirmPassword.trim() === "" && (
+                <span className='required_signup'>*</span>
+              )}
             </label>
             <input
               id='confirmPassword'
@@ -188,11 +203,19 @@ const SignupwEmail: React.FC<SignupwEmailProps> = ({ navigation }) => {
             />
           </div>
           {isPasswordMatch && formData.password && formData.confirmPassword ? (
-            <span className="password-match">Passwords match!</span>
+            <span className='password-match'>Passwords match!</span>
           ) : (
-            <span className="password-mismatch">Please make sure passwords match.</span>
+            <span className='password-mismatch'>
+              Please make sure passwords match.
+            </span>
           )}
-          {error && <p className='error-message'>{error}</p>}
+          {isPasswordMatch && error ? <p className='error-message'>{error}</p> :   
+      signupSuccess && (
+        <div className="signup-success">
+          <p>Signup successful! You can now log in.</p>
+          <button onClick={onSignupSuccess}>Go to Login</button>
+        </div>
+      )}
           <button type='submit' className='login-button'>
             {isLoading ? "Signing up..." : "Sign Up"}
           </button>

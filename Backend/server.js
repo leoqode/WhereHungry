@@ -24,6 +24,7 @@ mongoose
 // User model
 const UserSchema = new mongoose.Schema({
   email: { type: String, required: true, unique: true },
+  username: { type: String, required: true, unique: true },
   password: { type: String, required: true },
 });
 
@@ -32,13 +33,23 @@ const User = mongoose.model("User", UserSchema);
 // Routes
 app.post("/api/register", async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { email, username, password } = req.body;
+
+    const existingUser = await User.findOne({ $or: [{ email }, { username }] });
+    if (existingUser) {
+      return res
+        .status(409)
+        .json({ message: "Email or username already exists" });
+    }
+
     const hashedPassword = await bcrypt.hash(password, 10);
-    const user = new User({ email, password: hashedPassword });
+    const user = new User({ email, username, password: hashedPassword });
     await user.save();
     res.status(201).json({ message: "User created successfully" });
   } catch (error) {
-    res.status(500).json({ message: "Error creating user" });
+    res
+      .status(500)
+      .json({ message: "Error creating user", error: error.message });
   }
 });
 
@@ -59,10 +70,14 @@ app.post("/api/login", async (req, res) => {
         .json({ success: false, message: "Invalid credentials" });
     }
 
-    const token = jwt.sign({userId: user._id}, process.env.JWT_SECRET, {expiresIn: '1h'});
-    res.json({success: true, token});
+    const token = jwt.sign(
+      { userId: user._id, username: user.username },
+      process.env.JWT_SECRET,
+      { expiresIn: "1h" }
+    );
+    res.json({ success: true, token, username: user.username });
   } catch (error) {
-    res.status(500).json({ message: "Error logging in" });
+    res.status(500).json({ message: "Error logging in", error: error.message });
   }
 });
 
@@ -74,6 +89,7 @@ const authMiddleware = (req, res, next) => {
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     req.userId = decoded.userId;
+    req.username = decoded.username;
     next();
   } catch (error) {
     res.status(401).json({ message: "Invalid token" });
@@ -81,7 +97,11 @@ const authMiddleware = (req, res, next) => {
 };
 
 app.get("/api/protected", authMiddleware, (req, res) => {
-  res.json({ message: "This is a protected route", userId: req.userId });
+  res.json({
+    message: "This is a protected route",
+    userId: req.userId,
+    username: req.username,
+  });
 });
 
 app.listen(PORT, () => {
