@@ -12,7 +12,7 @@ const PORT = process.env.PORT || 3001;
 app.use(cors());
 app.use(express.json());
 
-// MongoDB connection
+
 mongoose
   .connect(process.env.MONGODB_URI, {
     useNewUrlParser: true,
@@ -21,7 +21,7 @@ mongoose
   .then(() => console.log("Connected to MongoDB"))
   .catch((err) => console.error("Could not connect to MongoDB", err));
 
-// User model
+
 const UserSchema = new mongoose.Schema({
   email: { type: String, required: true, unique: true },
   username: { type: String, required: true, unique: true },
@@ -30,7 +30,7 @@ const UserSchema = new mongoose.Schema({
 
 const User = mongoose.model("User", UserSchema);
 
-// Routes
+
 app.post("/api/register", async (req, res) => {
   try {
     const { email, username, password } = req.body;
@@ -75,13 +75,21 @@ app.post("/api/login", async (req, res) => {
       process.env.JWT_SECRET,
       { expiresIn: "1h" }
     );
-    res.json({ success: true, token, username: user.username });
+
+    res.json({
+      success: true,
+      token,
+      user: {
+        email: user.email,
+        username: user.username,
+        _id: user._id,
+      },
+    });
   } catch (error) {
     res.status(500).json({ message: "Error logging in", error: error.message });
   }
 });
 
-// Protected route example
 const authMiddleware = (req, res, next) => {
   const token = req.headers.authorization?.split(" ")[1];
   if (!token) return res.status(401).json({ message: "No token provided" });
@@ -102,6 +110,18 @@ app.get("/api/protected", authMiddleware, (req, res) => {
     userId: req.userId,
     username: req.username,
   });
+});
+
+app.get("/api/user", authMiddleware, async (req, res) => {
+  try {
+    const user = await User.findById(req.userId).select("-password");
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    res.json(user);
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching user details", error: error.message });
+  }
 });
 
 app.listen(PORT, () => {

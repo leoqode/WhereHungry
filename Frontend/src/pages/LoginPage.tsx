@@ -7,6 +7,8 @@ import SignupPage from './SignupPage'
 import googleVideo from "../assets/ModifyWhereHungry.mp4";
 import venmoVideo from "../assets/ModifyWhereHungry.mp4";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
+
 
 const isMobile = () => {
   return /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
@@ -37,10 +39,6 @@ const LoginPage: React.FC<LoginPageProps> = ({ navigation }) => {
 
   const handleSignupSuccess = () => {
     setIsLoginView(true); 
-  };
-
-  const handleLoginSuccess = () => {
-    navigate("/dashboard");  // Navigate to dashboard on successful login
   };
 
   const handleMouseOver = (
@@ -77,7 +75,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ navigation }) => {
   return (
     <div className='authen_panels'>
       {isLoginView ? (
-        <LoginwEmail navigation={navigation} onLoginSuccess={handleLoginSuccess} />
+        <LoginwEmail navigation={navigation}  />
       ) : (
         <SignupPage navigation={navigation} onSignupSuccess={handleSignupSuccess} />
       )}

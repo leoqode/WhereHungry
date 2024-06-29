@@ -1,57 +1,57 @@
-import React from "react";
-import "./pages/LoginPage";
-import "./App.css";
-import {
-  BrowserRouter as Router,
-  Route,
-  Routes,
-  useNavigate,
-} from "react-router-dom";
+import React, { useEffect } from "react";
+import { BrowserRouter as Router, Route, Routes, Navigate, useNavigate } from "react-router-dom";
 import LoginPage from "./pages/LoginPage";
-import { AuthProvider } from "./contexts/AuthContext";
 import Dashboard from "./pages/Dashboard";
+import { useAuth } from "./contexts/AuthContext";
+import "./App.css";
 
-interface NavigationProps {
-  goForward: () => void;
-  goBackward: () => void;
-}
-
-const WithNavigation: React.FC<{ children: React.ReactNode }> = ({
-  children,
-}) => {
+const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const { isAuthenticated, isLoading, user } = useAuth();
   const navigate = useNavigate();
 
-  const navProps: NavigationProps = {
-    goBackward: () => navigate(-1),
-    goForward: () => navigate(+1),
-  };
+  useEffect(() => {
+    if (!isLoading && !isAuthenticated) {
+      navigate('/login');
+    }
+  }, [isLoading, isAuthenticated, navigate]);
 
-  return React.Children.map(children, (child) => {
-    return child;
-  });
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (!isAuthenticated || !user) {
+    return null; // or a loading indicator
+  }
+
+  return <>{children}</>;
 };
+const App: React.FC = () => {
+  const { isAuthenticated } = useAuth();
 
-function App() {
   return (
-    <AuthProvider>
-      <Router>
-        <Routes>
-          <Route
-            path='/'
-            element={
-              <WithNavigation>
-                <LoginPage />
-              </WithNavigation>
-            }
-          />
-          <Route element={<Dashboard />}>
-            <Route path="/dashboard" element={<Dashboard />} />
-            {/* Add other protected routes here */}
-          </Route>
-        </Routes>
-      </Router>
-    </AuthProvider>
+    <Router>
+      <Routes>
+        <Route 
+          path="/" 
+          element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <Navigate to="/login" replace />} 
+        />
+        <Route 
+          path="/login" 
+          element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <LoginPage />} 
+        />
+        <Route 
+          path="/dashboard" 
+          element={
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          } 
+        />
+        {/* Add other routes here */}
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </Router>
   );
-}
+};
 
 export default App;

@@ -1,15 +1,20 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import PizzaBack from "../assets/PizzaBack.svg";
 import "./Loginwemail.css";
 import { useAuth } from "../contexts/AuthContext";
-import { useNavigate } from "react-router-dom";
 import { AxiosError } from "axios";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
-interface loginResponse {
+interface LoginResponse {
   success: boolean;
   token?: string;
   message?: string;
+  user?: {
+    email: string;
+    username: string;
+    _id: string;
+  };
 }
 
 interface NavigationProps {
@@ -18,39 +23,44 @@ interface NavigationProps {
 
 interface LoginwEmailProps {
   navigation?: NavigationProps;
-  onLoginSuccess?: () => void;
 }
 
-const LoginwEmail: React.FC<LoginwEmailProps> = ({ navigation, onLoginSuccess }) => {
+const LoginwEmail: React.FC<LoginwEmailProps> = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isEmailEmpty, setIsEmailEmpty] = useState(true);
   const [isPasswordEmpty, setIsPasswordEmpty] = useState(true);
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const { login } = useAuth();
+  const { login, isAuthenticated } = useAuth();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/dashboard');
+    }
+  }, [isAuthenticated, navigate]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError("");
     setIsLoading(true);
     try {
+      console.log("Attempting login...");
       const response = await login(email, password);
+      console.log("Login response:", response);
       if (response.success) {
-        navigate('/dashboard');
-        if (onLoginSuccess) {
-          onLoginSuccess();
-        }
+        console.log("Login successful, navigation should occur via useEffect");
       } else {
-        setError(
-          response.message || "Invalid email or password please try again"
-        );
+        console.log("Login failed:", response.message);
+        setError(response.message || "Invalid email or password please try again");
       }
     } catch (error) {
+      console.error("Error during login:", error);
       if (axios.isAxiosError(error)) {
-        const axiosError = error as AxiosError<loginResponse>;
+        const axiosError = error as AxiosError<LoginResponse>;
         if (axiosError.response) {
+          console.log("Axios error response:", axiosError.response);
           switch (axiosError.response.status) {
             case 401:
               setError("Invalid email or password");
@@ -59,19 +69,19 @@ const LoginwEmail: React.FC<LoginwEmailProps> = ({ navigation, onLoginSuccess })
               setError("User does not exist. Please create an account");
               break;
             default:
-              setError("An error occured. Please try again later.");
+              setError("An error occurred. Please try again later.");
           }
         } else {
           setError("Probably a network error. Please check your connection");
         }
       } else {
-        setError("An unexpected error occured. Please try again.");
+        setError("An unexpected error occurred. Please try again.");
       }
-      console.error("Error while logging in", error);
     } finally {
       setIsLoading(false);
     }
   };
+
   const handleBackClick = () => {
     if (navigation && navigation.goBackward) {
       navigation.goBackward();
@@ -135,7 +145,7 @@ const LoginwEmail: React.FC<LoginwEmailProps> = ({ navigation, onLoginSuccess })
             />
           </div>
           {error && <p className='error-message'>{error}</p>}
-          <button type='submit' className='login-button'>
+          <button type='submit' className='login-button' disabled={isLoading}>
             {isLoading ? "Logging in..." : "Log In"}
           </button>
         </form>

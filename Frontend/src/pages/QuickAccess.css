@@ -11,13 +11,13 @@
   min-width: 180px;
   top: 0;
 }
-.user_profile_picture_quick_access{
+.user_profile_picture_quick_access {
   position: absolute;
   top: 20%;
-  left:5%;
+  left: 5%;
 }
 
-.username_quick_access{
+.username_quick_access {
   font-weight: bold;
   font-family: Arial, Helvetica, sans-serif;
   position: relative;
@@ -25,8 +25,7 @@
   top: 25%;
 }
 
-
-.quick_access_left_profile{
+.quick_access_left_profile {
   text-align: center;
   display: flex;
   justify-content: center;
@@ -41,7 +40,6 @@
   color: black;
   font-weight: bold;
   font-family: Arial, Helvetica, sans-serif;
-
 }
 .pending_splits {
   color: black;
@@ -50,5 +48,26 @@
   border-bottom: 1px black solid;
   top: 45%;
   position: relative;
+}
 
+.quick-access-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #888 #f1f1f1;
+}
+
+.quick-access-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.quick-access-scrollbar::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.quick-access-scrollbar::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 3px;
+}
+
+.quick-access-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #555;
 }
