@@ -7,7 +7,7 @@
   justify-content: flex-start;
   position: fixed;
   height: 100%;
-  width: 20%;
+  
   min-width: 180px;
   top: 0;
 }
@@ -50,24 +50,3 @@
   position: relative;
 }
 
-.quick-access-scrollbar {
-  scrollbar-width: thin;
-  scrollbar-color: #888 #f1f1f1;
-}
-
-.quick-access-scrollbar::-webkit-scrollbar {
-  width: 6px;
-}
-
-.quick-access-scrollbar::-webkit-scrollbar-track {
-  background: #f1f1f1;
-}
-
-.quick-access-scrollbar::-webkit-scrollbar-thumb {
-  background: #888;
-  border-radius: 3px;
-}
-
-.quick-access-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: #555;
-}

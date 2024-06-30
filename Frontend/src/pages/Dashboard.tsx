@@ -1,7 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 import QuickAccess from "./QuickAccess";
 import { useAuth } from "../contexts/AuthContext";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
+import HungryAI from "./HungryAI";
+import RightHangCol from "./RightHangCol";
 
 const Dashboard: React.FC = () => {
   const { user, isAuthenticated } = useAuth();
@@ -10,7 +12,7 @@ const Dashboard: React.FC = () => {
 
   useEffect(() => {
     if (!isAuthenticated) {
-      navigate('/login');
+      navigate("/login");
     } else {
       setIsLoading(false);
     }
@@ -25,11 +27,16 @@ const Dashboard: React.FC = () => {
   }
 
   return (
-    <div className="flex h-screen overflow-hidden">
+    <div className='flex h-screen overflow-hidden'>
       <QuickAccess />
-      <main className="flex-1 overflow-y-auto p-6">
-        <h1 className="text-2xl font-bold mb-4">Dashboard</h1>
-        <p>Welcome to your dashboard, {user.username}. This is where your main content will go.</p>
+      <main className='flex-1 overflow-y-auto p-6'>
+        <h1 className='text-2xl font-bold mb-4'>Dashboard</h1>
+        <p>
+          Welcome to your dashboard, {user.username}. This is where your main
+          content will go.
+        </p>
+        <HungryAI />
+        <RightHangCol />
       </main>
     </div>
   );
