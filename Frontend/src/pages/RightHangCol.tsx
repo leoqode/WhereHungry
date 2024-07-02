@@ -73,7 +73,8 @@ const RightHangCol: React.FC = () => {
           </ScrollArea>
           
           <div className="relative py-4">
-            <Separator className="absolute left-0 right-0" />
+          <Separator className="absolute left-0 right-0 h-2 bg-black shadow-md my-4" />
+
             <span className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-gray-50 px-2 text-sm font-medium text-gray-500">
               Food Results
             </span>

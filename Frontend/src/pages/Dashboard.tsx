@@ -29,15 +29,9 @@ const Dashboard: React.FC = () => {
   return (
     <div className='flex h-screen overflow-hidden'>
       <QuickAccess />
-      <main className='flex-1 overflow-y-auto p-6'>
-        <h1 className='text-2xl font-bold mb-4'>Dashboard</h1>
-        <p>
-          Welcome to your dashboard, {user.username}. This is where your main
-          content will go.
-        </p>
-        <HungryAI />
-        <RightHangCol />
-      </main>
+
+      <HungryAI user={user.username} />
+      <RightHangCol />
     </div>
   );
 };
